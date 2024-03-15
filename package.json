@@ -1,0 +1,19 @@
+{
+  "name": "apis-with-node",
+  "version": "1.0.0",
+  "description": "practicing developing apis with node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrevailUzodinma/apis-with-node.git"
+  },
+  "author": "Prevail Uzodinma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PrevailUzodinma/apis-with-node/issues"
+  },
+  "homepage": "https://github.com/PrevailUzodinma/apis-with-node#readme"
+}
