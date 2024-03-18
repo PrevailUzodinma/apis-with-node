@@ -37,9 +37,13 @@ const Room = mongoose.model("Room", roomSchema);
 app.post("/api/v1/rooms-types", async (req, res) => {
   try {
     const data = await Roomtype.create(req.body);
-    res.status(200).send({ data });
+    if (!data) {
+      res.status(400).send({ error: "Failed to create room-type" });
+    } else {
+      res.status(200).send({ data });
+    }
   } catch (error) {
-    res.status(500).send({ error: "Failed to create room-type" });
+    res.status(500).send({ error: "Internal server error" });
   }
 });
 
@@ -47,9 +51,13 @@ app.post("/api/v1/rooms-types", async (req, res) => {
 app.get("/api/v1/room-types", async (req, res) => {
   try {
     const allRoomTypes = await Roomtype.find({});
-    res.status(200).send({ data: allRoomTypes });
+    if (!allRoomTypes) {
+      res.status(404).send({ error: "Could not retrieve room-types" });
+    } else {
+      res.status(200).send({ data: allRoomTypes });
+    }
   } catch (error) {
-    res.status(500).send({ error: "Could not retrieve room-types" });
+    res.status(500).send({ error: "Internal server error" });
   }
 });
 
@@ -57,45 +65,72 @@ app.get("/api/v1/room-types", async (req, res) => {
 app.post("/api/v1/rooms", async (req, res) => {
   try {
     const newRoom = await Room.create(req.body);
-    res.status(500).send({ newRoom });
+    if (!newRoom) {
+      res.status(400).send({ error: "Failed to create room" });
+    } else {
+      res.status(200).send({ newRoom });
+    }
   } catch (error) {
-    res.status(500).send({ error: "Failed to create room" });
+    res.status(500).send({ error: "Internal server error" });
   }
 });
 
 // get all rooms
+/* Hang on, i'm still figuring out how to do this */
 
 // edit a room by id
-app.patch('/api/v1/rooms/:roomId', async (req, res) => {
+app.patch("/api/v1/rooms/:roomId", async (req, res) => {
   //Extract the ID of the room, I want to update from the request parameter
   const { roomId } = req.params;
 
   //Extract the update data from request body sent by client
   const partialRoomData = req.body;
 
-// Update the existing data with the new data
-  try{
-    const updatedRoom = await Room.findByIdAndUpdate(roomId, partialRoomData, { new: true});
-    res.status(200).send({data: updatedRoom})
+  // Update the existing data with the new data
+  try {
+    const updatedRoom = await Room.findByIdAndUpdate(roomId, partialRoomData, {
+      new: true,
+    });
+    if (!updatedRoom) {
+      res.status(400).send({ error: "Could not update room info!" });
+    } else {
+      res.status(200).send({ data: updatedRoom });
+    }
+  } catch (error) {
+    res.status(500).send({ error: "Internal server error" });
   }
-  catch(error){
-    res.status(500).send({error: 'Could not update room info!'})
+});
+
+//Delete a room using its id
+app.delete("/api/v1/rooms/:roomId", async (req, res) => {
+  //Extract ID of the room to delete using request parameters
+  const { roomId } = req.params;
+  //delete the room with the extracted ID
+  try {
+    await Room.findByIdAndDelete(roomId);
+    //send a success response
+    res.status(200).send({ message: "Room deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ error: "Internal server error" });
   }
 });
 
 // Get/fetch room by ID
-app.get('/api/v1/rooms/:roomId', async (req, res) => {
-// Extract ID of specific room to get from request parameters
-const { roomId } = req.params;
-
-try{
-    const room = await Room.findById({roomId});
-    res.status(200).send({room});
-}
-catch(error){
-    res.status(500).send({error: 'Could not find room with provided ID'})
-}
-})
+app.get("/api/v1/rooms/:roomId", async (req, res) => {
+  // Extract ID of specific room to get from request parameters
+  const { roomId } = req.params;
+  //get room by ID
+  try {
+    const room = await Room.findById({ roomId });
+    if (!room) {
+      res.status(404).send({ error: "Could not find room with provided ID" });
+    } else {
+      res.status(200).send({ room });
+    }
+  } catch (error) {
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
 
 // Tell express to listen for port
 app.listen(port, () => {
