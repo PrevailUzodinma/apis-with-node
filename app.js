@@ -1,12 +1,17 @@
 // Include every dependency installed
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const cors = require('cors')
 const app = express();
 const port = 3000;
 const uri =
   "mongodb+srv://theiprevail:<password>@hoteldbcluster.5u3hlzd.mongodb.net/?retryWrites=true&w=majority&appName=HotelDBCluster";
 
+//Allow requests from any origin
+app.use(cors({
+    origin: '*',
+}))
 /* Connect the DataBase*/
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
