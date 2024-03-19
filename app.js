@@ -6,18 +6,21 @@ const app = express();
 require("dotenv").config();
 const connectDB = require("./connectDB");
 const { Roomtype, Room } = require("./models");
-const port = process.env.PORT || 3000;
+const port = 4890;
 
 //Allow requests from any origin
 app.use(cors({}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //Connect the DataBase
 connectDB();
 
 /* Time to set up my ROUTES */
 //base url
-app.get('/', (req, res) =>{
-  res.send('Welcome to hotel management api');
+app.get("/", (req, res) => {
+  res.send("Welcome to hotel management api");
 });
 
 // create a room-type
@@ -40,12 +43,9 @@ app.post("/api/v1/rooms-types", async (req, res) => {
 app.get("/api/v1/room-types", async (req, res) => {
   try {
     const allRoomTypes = await Roomtype.find({});
-    if (!allRoomTypes) {
-      res.status(404).send({ error: "Could not retrieve room-types" });
-    } else {
-      res.status(200).send({ data: allRoomTypes });
+    res.status(200).send({ data: allRoomTypes });
     }
-  } catch (error) {
+  catch (error) {
     res.status(500).send({ error: "Internal server error" });
   }
 });
@@ -111,12 +111,9 @@ app.get("/api/v1/rooms/:roomId", async (req, res) => {
   //get room by ID
   try {
     const room = await Room.findById({ roomId });
-    if (!room) {
-      res.status(404).send({ error: "Could not find room with provided ID" });
-    } else {
-      res.status(200).send({ room });
+      res.status(200).send({ data: room });
     }
-  } catch (error) {
+  catch (error) {
     res.status(500).send({ error: "Internal server error" });
   }
 });
