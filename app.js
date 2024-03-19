@@ -6,7 +6,7 @@ const app = express();
 require("dotenv").config();
 const connectDB = require("./connectDB");
 const { Roomtype, Room } = require("./models");
-const port = 4890;
+const port = process.env.PORT;
 
 //Allow requests from any origin
 app.use(cors({}));
