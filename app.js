@@ -1,47 +1,31 @@
 // Include every dependency installed
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors')
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
-require('dotenv').config();
-const connectDB = require('./connectDB');
+require("dotenv").config();
+const connectDB = require("./connectDB");
+const { Roomtype, Room } = require("./models");
 const port = process.env.PORT || 3000;
 
-
 //Allow requests from any origin
-app.use(cors({}))
+app.use(cors({}));
 
-/* Connect the DataBase*/
+//Connect the DataBase
 connectDB();
-
-// Define the Schema for the roomtype data
-const roomtypeSchema = new mongoose.Schema({
-  name: String,
-});
-
-// Define roomtype model, to handle our CRUD operations
-const Roomtype = mongoose.model("Roomtype", roomtypeSchema);
-
-// Define the Schema for the room data
-const roomSchema = new mongoose.Schema({
-  name: String,
-  roomType: { type: mongoose.Schema.Types.ObjectId, ref: "Roomtype" },
-  price: Number,
-});
-
-// Define room model, to handle our CRUD operations
-const Room = mongoose.model("Room", roomSchema);
 
 /* Time to set up my ROUTES */
 
 // create a room-type
 app.post("/api/v1/rooms-types", async (req, res) => {
   try {
-    const data = await Roomtype.create(req.body);
-    if (!data) {
+    // Extract the data from the client using request.body
+    const data = req.body;
+    const newRoomType = await Roomtype.create(data);
+    if (!newRoomType) {
       res.status(400).send({ error: "Failed to create room-type" });
     } else {
-      res.status(200).send({ data });
+      res.status(200).send({ newRoomType });
     }
   } catch (error) {
     res.status(500).send({ error: "Internal server error" });
