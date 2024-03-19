@@ -15,6 +15,10 @@ app.use(cors({}));
 connectDB();
 
 /* Time to set up my ROUTES */
+//base url
+app.get('/', (req, res) =>{
+  res.send('Welcome to hotel management api');
+});
 
 // create a room-type
 app.post("/api/v1/rooms-types", async (req, res) => {
