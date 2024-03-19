@@ -1,22 +1,18 @@
 // Include every dependency installed
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors')
 const app = express();
-const port = 3000;
-const uri =
-  "mongodb+srv://theiprevail:<password>@hoteldbcluster.5u3hlzd.mongodb.net/?retryWrites=true&w=majority&appName=HotelDBCluster";
+require('dotenv').config();
+const connectDB = require('./connectDB');
+const port = process.env.PORT || 3000;
+
 
 //Allow requests from any origin
-app.use(cors({
-    origin: '*',
-}))
+app.use(cors({}))
+
 /* Connect the DataBase*/
-mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to HotelDB"))
-  .catch(() => console.log("Error connecting to MongoDB Atlas"));
+connectDB();
 
 // Define the Schema for the roomtype data
 const roomtypeSchema = new mongoose.Schema({
